@@ -1,9 +1,11 @@
-import { HardhatUserConfig } from "hardhat/config";
+import '@nomiclabs/hardhat-waffle'
+import '@typechain/hardhat'
+import { HardhatUserConfig } from 'hardhat/config'
+import 'hardhat-deploy'
+import 'solidity-coverage'
 import { NetworksUserConfig } from "hardhat/types";
 import { config as dotenvConfig } from 'dotenv';
 import { resolve } from 'path';
-import "@nomicfoundation/hardhat-toolbox";
-import "@nomicfoundation/hardhat-ethers";
 
 dotenvConfig({ path: resolve(__dirname, './.env') });
 

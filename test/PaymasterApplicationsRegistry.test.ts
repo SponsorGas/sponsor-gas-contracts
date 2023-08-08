@@ -1,12 +1,13 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { PaymasterApplicationsRegistry } from "../typechain-types";
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { encodeBytes32String } from "ethers";
+// import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+import { formatBytes32String } from "ethers/lib/utils";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("PaymasterApplicationsRegistry", function () {
   let paymastersRegistry: PaymasterApplicationsRegistry;
-  let owner: HardhatEthersSigner;
+  let owner: SignerWithAddress;
   let applicationAddress: string;
   let paymasterAddress: string;
 
@@ -15,12 +16,12 @@ describe("PaymasterApplicationsRegistry", function () {
     paymastersRegistry = await PaymastersRegistryFactory.deploy();
     [owner] = await ethers.getSigners();
 
-    applicationAddress = ethers.getAddress("0xEA68b3eFbBf63BB837F36A90AA97Df27bBF9B864");
-    paymasterAddress = ethers.getAddress("0xd6F6bA8025366300822Dae5008762074bC72F1B5");
+    applicationAddress = ethers.utils.getAddress("0xEA68b3eFbBf63BB837F36A90AA97Df27bBF9B864");
+    paymasterAddress = ethers.utils.getAddress("0xd6F6bA8025366300822Dae5008762074bC72F1B5");
   });
 
   it("should register a paymaster", async function () {
-    const paymasterMetadataCID = encodeBytes32String("metadataCID");
+    const paymasterMetadataCID = formatBytes32String("metadataCID");
     await paymastersRegistry.registerPaymaster(paymasterAddress, paymasterMetadataCID);
 
     const paymaster = await paymastersRegistry.paymastersMap(paymasterAddress);
@@ -30,7 +31,7 @@ describe("PaymasterApplicationsRegistry", function () {
   });
 
   it("should not register the same paymaster again", async () => {
-    const paymasterMetadataCID = ethers.encodeBytes32String("metadataCID");
+    const paymasterMetadataCID = formatBytes32String("metadataCID");
     await expect(paymastersRegistry.registerPaymaster(paymasterAddress, paymasterMetadataCID)).to.be.revertedWith(
       "Paymaster already registered"
     );

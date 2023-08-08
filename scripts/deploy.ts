@@ -4,8 +4,7 @@ import { PaymasterApplicationsRegistry } from "../typechain-types";
 async function main() {
   const PaymastersRegistryFactory = await ethers.getContractFactory("PaymasterApplicationsRegistry");
   let paymastersRegistry:PaymasterApplicationsRegistry  = await PaymastersRegistryFactory.deploy();
-
-  console.log(`Paymaster Registry Contract : ${await paymastersRegistry.getAddress()}`)
+  console.log(`Paymaster Registry Contract : ${await paymastersRegistry.address}`)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
