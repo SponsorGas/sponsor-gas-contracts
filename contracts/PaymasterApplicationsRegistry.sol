@@ -4,14 +4,19 @@ pragma solidity ^0.8.0;
 contract PaymasterApplicationsRegistry {
     struct Paymaster {
         bool isActive;
+        bytes paymasterMetadataCID;
         mapping(address => bool) applications;
         address owner;
     }
 
     mapping(address => Paymaster) public paymastersMap;
 
-    event PaymasterRegistered(address indexed paymasterAddress);
+    event PaymasterRegistered(
+        address indexed paymasterAddress,
+        bytes paymasterMetadataCID
+    );
     event PaymasterUnregistered(address indexed paymasterAddress);
+
     event ApplicationAdded(
         address indexed paymasterAddress,
         address indexed applicationAddress
@@ -29,17 +34,21 @@ contract PaymasterApplicationsRegistry {
         _;
     }
 
-    function registerPaymaster(address paymasterAddress) external {
-        require(paymasterAddress != address(0), "Invalid paymaster address");
+    function registerPaymaster(
+        address _paymasterAddress,
+        bytes calldata _paymasterMetadataCID
+    ) external {
+        require(_paymasterAddress != address(0), "Invalid paymaster address");
         require(
-            !paymastersMap[paymasterAddress].isActive,
+            !paymastersMap[_paymasterAddress].isActive,
             "Paymaster already registered"
         );
 
-        Paymaster storage paymaster = paymastersMap[paymasterAddress];
+        Paymaster storage paymaster = paymastersMap[_paymasterAddress];
         paymaster.isActive = true;
         paymaster.owner = msg.sender;
-        emit PaymasterRegistered(paymasterAddress);
+        paymaster.paymasterMetadataCID = _paymasterMetadataCID;
+        emit PaymasterRegistered(_paymasterAddress, _paymasterMetadataCID);
     }
 
     function unregisterPaymaster(
