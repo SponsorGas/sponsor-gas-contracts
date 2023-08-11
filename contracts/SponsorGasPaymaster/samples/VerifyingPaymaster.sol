@@ -5,7 +5,7 @@ pragma solidity ^0.8.12;
 /* solhint-disable no-inline-assembly */
 
 import "../core/BasePaymaster.sol";
-import "../interfaces/IPaymasterMetadata.sol";
+// import "../interfaces/IPaymasterMetadata.sol";
 import "../../../node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "../../../node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
@@ -18,11 +18,9 @@ import "../../../node_modules/@openzeppelin/contracts/utils/introspection/ERC165
  * - the paymaster checks a signature to agree to PAY for GAS.
  * - the account checks a signature to prove identity and account ownership.
  */
-contract VerifyingPaymaster is ERC165, BasePaymaster, IPaymasterMetadata {
+contract VerifyingPaymaster is BasePaymaster {
     using ECDSA for bytes32;
     using UserOperationLib for UserOperation;
-
-    bytes private paymasterMetadataCID;
 
     address public immutable verifyingSigner;
 
@@ -32,25 +30,12 @@ contract VerifyingPaymaster is ERC165, BasePaymaster, IPaymasterMetadata {
 
     constructor(
         IEntryPoint _entryPoint,
-        address _verifyingSigner,
-        bytes memory _paymasterMetadataCID
+        address _verifyingSigner
     ) BasePaymaster(_entryPoint) {
         verifyingSigner = _verifyingSigner;
-        paymasterMetadataCID = _paymasterMetadataCID;
     }
 
     mapping(address => uint256) public senderNonce;
-
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(ERC165) returns (bool) {
-        return
-            interfaceId == type(IPaymasterMetadata).interfaceId ||
-            super.supportsInterface(interfaceId);
-    }
 
     function pack(
         UserOperation calldata userOp
@@ -68,17 +53,6 @@ contract VerifyingPaymaster is ERC165, BasePaymaster, IPaymasterMetadata {
             mstore(ret, len)
             calldatacopy(add(ret, 32), ofs, len)
         }
-    }
-
-    function metadataCID() external view override returns (bytes memory _cid) {
-        return paymasterMetadataCID;
-    }
-
-    function updateMetadataCID(
-        bytes calldata _paymasterMetadataCID
-    ) public onlyOwner {
-        emit MetadataUpdate(_paymasterMetadataCID);
-        paymasterMetadataCID = _paymasterMetadataCID;
     }
 
     /**

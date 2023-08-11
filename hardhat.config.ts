@@ -10,9 +10,9 @@ import { resolve } from 'path';
 dotenvConfig({ path: resolve(__dirname, './.env') });
 
 function getNetworks(): NetworksUserConfig {
-  if (process.env.ALCHEMY_API_KEY && process.env.ETHEREUM_PRIVATE_KEY) {
+  if (process.env.ALCHEMY_API_KEY && process.env.PAYMASTERSIGNER_PRIVATE_KEY) {
       const alchemyApiKey = process.env.ALCHEMY_API_KEY
-      const accounts = [`0x${process.env.ETHEREUM_PRIVATE_KEY}`]
+      const accounts = [`0x${process.env.PAYMASTERSIGNER_PRIVATE_KEY}`]
       return {
           goerli: {
               url: `${process.env.ETHEREUM_URL}`,
@@ -42,7 +42,7 @@ function getNetworks(): NetworksUserConfig {
             accounts: accounts,
           },
           optimism: {
-            url: `${process.env.OPTIMISM_GOERLI_RPC}`,
+            url: `${process.env.OPRIMISM_GOERLI_RPC}`,
             accounts: accounts,
           },
 
