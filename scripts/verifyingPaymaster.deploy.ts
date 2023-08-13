@@ -32,12 +32,12 @@ async function main() {
   console.log(`Verifying Paymaster Signer : ${deployerWallet.address}`)
 	
   const VerifyingPaymasterArtifacts = await ethers.getContractFactory("VerifyingPaymaster");
-  const verifyingPaymaster =  VerifyingPaymasterArtifacts.attach("0xE9866C87082Bac6a08a1F7CbBc2697d137fC5dfc")
-	//await VerifyingPaymasterArtifacts.deploy(entryPointAddress,deployerWallet.address,{ maxFeePerGas: 10e9 });
+  const verifyingPaymaster =  VerifyingPaymasterArtifacts.attach("0xE9866C87082Bac6a08a1F7CbBc2697d137fC5dfc") //0xe6e61b4cb54ecfc67421b61bcdc5a566d91888ae -( base paymaster)
+	//await VerifyingPaymasterArtifacts.deploy(entryPointAddress,deployerWallet.address,{ maxFeePerGas: 10e10 });
   console.log(`Verfiying Paymaster Address: ${verifyingPaymaster.address}`)
-	await verifyingPaymaster.addStake(1, { value: parseEther('2'),maxFeePerGas: 10e9  })
+	await verifyingPaymaster.addStake(1, { value: parseEther('2'),maxFeePerGas: 10e10  })
 	console.log(`VerifyingPaymaster added 2 ETH Stake on EntryPoint Contract `)
-	await entryPoint.depositTo(verifyingPaymaster.address, { value: parseEther('2'),maxFeePerGas: 10e9  });
+	await entryPoint.depositTo(verifyingPaymaster.address, { value: parseEther('2'),maxFeePerGas: 10e10  });
 	console.log(`VerifyingPaymaster deposited 2 ETH on EntryPoint Contract for transaction gas fee `)
 	console.log(await entryPoint.balanceOf(verifyingPaymaster.address))
 
